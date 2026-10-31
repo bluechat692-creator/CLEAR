@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.bluechat692.clear",
+        "sha256_cert_fingerprints": ["7C:FC:15:41:5A:8E:59:19:D4:70:3D:45:48:E3:CF:00:96:33:4D:DA:86:95:08:FF:1D:9A:36:9A:5C:B4:55:B0"]
+      }
+    }]
