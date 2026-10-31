@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Install CLEAR</title>
+<meta name="theme-color" content="#070A18">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./clear-192.png">
+<link rel="icon" href="./clear-192.png">
+<style>
+:root{--bg:#070A18;--ink:#EEF1FF;--mut:#8A93B8;--ln:#ffffff1a;--sf:#ffffff0d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(at 20% 0,#7B61FF2e,transparent 55%),radial-gradient(at 90% 100%,#26D9FF1f,transparent 55%),var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;padding:calc(36px + env(safe-area-inset-top,0px)) 22px calc(30px + env(safe-area-inset-bottom,0px))}
+main{width:100%;max-width:380px;text-align:center}
+.logo{width:104px;height:104px;border-radius:26px;box-shadow:0 18px 40px -12px #7B61FFaa,0 0 0 1px var(--ln)}
+h1{font-size:30px;letter-spacing:-.03em;margin:18px 0 4px}
+p.t{color:var(--mut);margin:0 0 26px}
+.btn{display:block;width:100%;padding:15px;border-radius:16px;border:0;font:600 16px system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#8A6CFF,#2ED6FF);cursor:pointer;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.btn.o{background:var(--sf);color:var(--ink);border:1px solid var(--ln);margin-top:10px;font-weight:500;font-size:14px;padding:12px}
+.card{margin-top:22px;text-align:left;background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:16px 18px;display:none}
+.card.on{display:block}
+.card b{display:block;margin-bottom:6px;font-size:14px}
+.card ol{margin:0;padding-left:20px;color:var(--mut);font-size:14px}.card li{margin:4px 0}
+.card li strong{color:var(--ink);font-weight:600}
+.ok{color:#39F08C;font-weight:600;margin-top:16px;display:none}
+.warn{margin-top:18px;font-size:13px;color:#FFB86B;display:none}
+small{display:block;color:var(--mut);margin-top:22px;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="./clear-512.png" alt="CLEAR">
+  <h1>CLEAR</h1>
+  <p class="t">Chat, share moods and posts with friends.</p>
+
+  <button id="go" class="btn">Install app</button>
+  <a id="open" class="btn o" href="./" style="display:none">Open CLEAR</a>
+
+  <div id="okm" class="ok">&#10003; Installed. Find CLEAR on your home screen.</div>
+  <div id="warn" class="warn">You opened this inside another app (WhatsApp, Facebook, Instagram, etc.). Tap the &#8942; or share button and choose <b>Open in Chrome</b> (or Safari on iPhone), then install.</div>
+
+  <div id="ios" class="card">
+    <b>Install on iPhone</b>
+    <ol>
+      <li>Open this page in <strong>Safari</strong>.</li>
+      <li>Tap the <strong>Share</strong> button (square with an arrow).</li>
+      <li>Choose <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</li>
+    </ol>
+  </div>
+  <div id="and" class="card">
+    <b>Install on Android</b>
+    <ol>
+      <li>Open this page in <strong>Chrome</strong>.</li>
+      <li>Tap the <strong>&#8942;</strong> menu at the top right.</li>
+      <li>Tap <strong>Install app</strong> (or Add to Home screen).</li>
+    </ol>
+  </div>
+  <small>Free. No app store needed.</small>
+</main>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)},ua=navigator.userAgent,
+      ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
+      inapp=/FBAN|FBAV|Instagram|Line\/|TikTok|Snapchat|Twitter|MicroMessenger/i.test(ua),
+      standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true,
+      dp=null;
+  if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});
+  if(inapp)$("warn").style.display="block";
+  function installed(){$("go").style.display="none";$("okm").style.display="block";$("open").style.display="block";$("and").classList.remove("on");$("ios").classList.remove("on")}
+  if(standalone){$("go").style.display="none";$("open").style.display="block";$("open").textContent="Open CLEAR"}
+  addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e});
+  addEventListener("appinstalled",installed);
+  $("go").onclick=function(){
+    if(dp){dp.prompt();dp.userChoice.then(function(c){if(c.outcome==="accepted")installed();dp=null})}
+    else if(ios){$("ios").classList.add("on");$("ios").scrollIntoView({behavior:"smooth"})}
+    else{$("and").classList.add("on");$("and").scrollIntoView({behavior:"smooth"})}
+  };
+  if(ios)$("go").textContent="How to install on iPhone";
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# Lets GitHub Pages publish the .well-known folder (needed for the Android app)
+include:
+  - ".well-known"

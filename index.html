@@ -627,4 +627,23 @@ const _sr5=srH;srH=()=>{const h=_sr5();if(st2!="v"||SQ.trim())return h;if(!VLd&&
 boot();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(err=>console.warn("Service worker registration failed",err)));}</script>
+
+<style>
+#ib{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;display:none;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-radius:99px;background:#141a3a;color:#EEF1FF;border:1px solid #ffffff22;box-shadow:0 10px 30px -8px #000c;font:500 13px system-ui,sans-serif;white-space:nowrap}
+#ib button{font:600 13px system-ui,sans-serif;border:0;border-radius:99px;cursor:pointer}
+#ib .ii{background:linear-gradient(135deg,#8A6CFF,#2ED6FF);color:#fff;padding:7px 16px}
+#ib .ix{background:none;color:#8A93B8;padding:6px 10px;font-size:16px}
+</style>
+<div id="ib"><span>Install CLEAR app</span><button class="ii" id="ibi">Install</button><button class="ix" id="ibx" aria-label="Close">&#10005;</button></div>
+<script>
+(function(){var dp=null,b=document.getElementById("ib");
+function hide(){b.style.display="none"}
+try{if(localStorage.getItem("clr_ib")==="1")return}catch(e){}
+if(matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)return;
+addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;b.style.display="flex"});
+addEventListener("appinstalled",hide);
+document.getElementById("ibi").onclick=function(){if(!dp)return;dp.prompt();dp.userChoice.then(function(){dp=null;hide()})};
+document.getElementById("ibx").onclick=function(){hide();try{localStorage.setItem("clr_ib","1")}catch(e){}};
+})();
+</script>
 </body></html>
