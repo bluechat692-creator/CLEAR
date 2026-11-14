@@ -1,42 +1,62 @@
+
 importScripts('./clear-push.js');
-/* CLEAR service worker: app shell works offline, data always comes live from Supabase */
-const CACHE = "clear-v6";
+
+// CLEAR service worker
+const CACHE = "clear-v7";
+
 const SHELL = [
   "./",
   "./index.html",
-  "./install.html",
   "./manifest.json",
   "./clear-push.js",
   "./clear-192.png",
-  "./clear-512.png",
-  "./clear-maskable-192.png",
-  "./clear-maskable-512.png",
-  "./index.html", "./install.html", "./manifest.json", "./clear-192.png", "./clear-512.png", "./clear-maskable-192.png", "./clear-maskable-512.png"];
+  "./clear-512.png"
+];
 
-self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(SHELL))
+      .then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener("activate", e => {
-  e.waitUntil(
+self.addEventListener("activate", event => {
+  event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys =>
+        Promise.all(
+          keys
+            .filter(key => key !== CACHE)
+            .map(key => caches.delete(key))
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch", e => {
-  const req = e.request;
-  const url = new URL(req.url);
-  // Only handle our own GET files. Supabase, fonts and uploads go straight to the network.
-  if (req.method !== "GET" || url.origin !== self.location.origin) return;
-  // Network first (so updates arrive right away), fall back to cache when offline.
-  e.respondWith(
-    fetch(req)
-      .then(res => {
-        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
-        return res;
+self.addEventListener("fetch", event => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.method !== "GET" ||
+      url.origin !== self.location.origin) {
+    return;
+  }
+
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(request, copy));
+        }
+        return response;
       })
-      .catch(() => caches.match(req).then(r => r || caches.match("./index.html")))
+      .catch(() =>
+        caches.match(request).then(
+          cached => cached || caches.match("./index.html")
+        )
+      )
   );
 });
