@@ -1,7 +1,17 @@
 importScripts('./clear-push.js');
 /* CLEAR service worker: app shell works offline, data always comes live from Supabase */
 const CACHE = "clear-v6";
-const SHELL = ["./", "./index.html", "./install.html", "./manifest.json", "./clear-192.png", "./clear-512.png", "./clear-maskable-192.png", "./clear-maskable-512.png"];
+const SHELL = [
+  "./",
+  "./index.html",
+  "./install.html",
+  "./manifest.json",
+  "./clear-push.js",
+  "./clear-192.png",
+  "./clear-512.png",
+  "./clear-maskable-192.png",
+  "./clear-maskable-512.png",
+  "./index.html", "./install.html", "./manifest.json", "./clear-192.png", "./clear-512.png", "./clear-maskable-192.png", "./clear-maskable-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
